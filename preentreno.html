@@ -8,6 +8,9 @@
   <title>EUDOKIA</title>
   <style>
     /* Transición fade para el texto principal y los bloques de producto */
+    body {
+      padding-bottom: 120px;
+    }
     .fade-in, .producto.fade-in, #banda-descuento.fade-in {
       opacity: 0;
       transition: opacity 2.2s cubic-bezier(.25,.8,.25,1);
@@ -15,9 +18,21 @@
     .fade-in.visible, .producto.fade-in.visible, #banda-descuento.fade-in.visible {
       opacity: 1;
     }
+    .producto .info h3 {
+      font-size: 1rem !important;
+    }
+    .producto .info p {
+      font-size: 1.6rem !important;
+    }
+    .producto .info p s {
+      font-size: 0.8rem !important;
+    }
+    .producto .info .precio {
+      font-size: 1rem !important;
+    }
   </style>
 </head>
-<body>
+<body style="padding-bottom: 120px;">
     <header>
       <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
         <div style="display: flex; align-items: center;">
@@ -210,8 +225,8 @@ document.querySelectorAll('.menu-footer').forEach(function(menu){
   </section>
   </main>
 
-<footer style="width: 100%; background: #000000; color: #fff; text-align: center; padding: 1rem 0; left: 0; bottom: 0; font-family: 'Orbitron', Arial, sans-serif; z-index: 100;">
-  <p>&copy; 2025 EUDOKIA SUPLEMENTS. Todos los derechos reservados.</p>
+<footer style="position: fixed; width: 100%; background: #000000; color: #fff; text-align: center; padding: 1rem 0; left: 0; bottom: 0; font-family: 'Orbitron', Arial, sans-serif; z-index: 100;">
+  <p>&copy; 2026 EUDOKIA SUPLEMENTS. Todos los derechos reservados.</p>
 </footer>
 <script>
   // Fade-in para texto principal y bloques de producto

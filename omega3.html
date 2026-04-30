@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>EUDOKIA</title>
+  <style>
+    /* Transición fade para el texto principal y los bloques de producto */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 1rem 1rem 180px;
+      box-sizing: border-box;
+      color: #fff;
+      background-image: url('https://i.postimg.cc/yYghcDn7/bg.jpg');
+      background-color: #000;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center center;
+    }
+    *, *::before, *::after {
+      box-sizing: inherit;
+    }
+    .fade-in, .producto.fade-in, #banda-descuento.fade-in {
+      opacity: 0;
+      transition: opacity 2.2s cubic-bezier(.25,.8,.25,1);
+    }
+    .fade-in.visible, .producto.fade-in.visible, #banda-descuento.fade-in.visible {
+      opacity: 1;
+    }
+    main {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+    .productos {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-auto-rows: minmax(520px, auto);
+      gap: 3rem;
+      max-width: 1320px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+    .producto {
+      width: 100%;
+      max-width: 440px;
+      min-height: 520px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      margin: 0 auto;
+      padding: 1.4rem;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.65);
+      background: rgba(10, 10, 10, 0.92);
+      border: none;
+      border-radius: 18px;
+      position: relative;
+      overflow: visible;
+      transition: transform 0.18s ease, box-shadow 0.35s ease;
+    }
+    .producto:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.75);
+    }
+    .producto img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: contain;
+      display: block;
+      margin-bottom: 1.2rem;
+    }
+    .producto .info {
+      padding: 0 0.2rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    #fade-text {
+      display: block;
+      margin: 2.5rem auto 1.2rem;
+      max-width: 1200px;
+      padding: 0 1rem;
+    }
+    .fixed-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 999;
+    }
+    .producto .info h3 {
+      font-size: 1rem !important;
+    }
+    .producto .info p {
+      font-size: 1.6rem !important;
+    }
+    .producto .info p s {
+      font-size: 0.8rem !important;
+    }
+    .producto .info .precio {
+      font-size: 1rem !important;
+    }
+  </style>
+</head>
+<body style="padding-bottom: 120px;">
+    <header>
+      <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+        <div style="display: flex; align-items: center;">
+          <img src="https://i.postimg.cc/Mp1y3gh4/eudokia-icono.png" alt="EUDOKIA" style="width:90px; height:90px; margin-right: 28px;">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin-left: 15px;">
+            <span style="color: white; font-size: 1.6rem; font-weight: bold; transform: scaleX(1.3); display: inline-block; line-height: 1;">EUDOKIA</span>
+            <span style="color: white; font-size: 1.6rem; font-weight: bold; transform: scaleX(1.3); display: inline-block; line-height: 1; margin-top: -0.2em;">SUPLEMENTS</span>
+          </div>
+        </div>
+        <div style="flex:1; display:flex; justify-content:center;">
+          <form style="display:flex; align-items:center; background: #000; border: 2px solid #fff; border-radius: 0; padding: 0.2rem 1rem;" onsubmit="return false;">
+            <input type="text" id="busqueda" placeholder="¿Qué estás buscando?" style="background: #000; color: #fff; border: none; outline: none; font-size: 1rem; padding: 0.6rem 0.8rem; width: 700px; border-radius: 0;" />
+            <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0 0.5rem;">
+              <img src="https://cdn-icons-png.flaticon.com/512/54/54481.png" alt="Buscar" style="width: 22px; height: 22px; filter: invert(1);">
+            </button>
+          </form>
+        </div>
+        <nav style="margin-right: 0; display: flex; align-items: center;">
+          
+            <button class="btn-header btn-inises" style="margin-left: 0.5em; margin-right: 1em; justify-content: center; align-items: center;" onclick="location.href='iniciarsesion.html'">
+            <img src="https://i.postimg.cc/q7shxmJ4/inises.png" alt="icono iniciar sesión" style="height: 38px; width: auto; margin-right: 0.5em;" />
+            <span style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <span>¡Hola! Iniciá sesión</span>
+            <span style="font-size: 0.85em; font-weight: normal; margin-top: 0.2em;">O podés registrarte</span>
+            </span>
+            </button>
+
+            <button class="btn-header btn-favoritos" style="margin-left: 0.5em; margin-right: 1em; justify-content: center; align-items: center; min-height: 56px;">
+              <img src="https://i.postimg.cc/jdzS9Mw1/star.png" alt="icono favoritos" style="height: 38px; width: auto; margin-right: 0.5em;" />
+              <span style="display: flex; align-items: center; justify-content: center; width: 100%;">Favoritos</span>
+            </button>
+          <button class="btn-header btn-carrito" style="margin-left: 0.5em; margin-right: 1em; justify-content: center; align-items: center;">
+            <img src="https://i.postimg.cc/BZL8hQQm/carrito.png" alt="icono carrito" style="height: 38px; width: auto; margin-right: 0.5em;" />
+            <span style="display: flex; align-items: center; justify-content: center; width: 100%;">Carrito</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+<footer style="background: #00cbff; color: #fff; padding: 0.5rem 0; margin-top: 0;">
+  <nav style="display: flex; align-items: center; justify-content: center; gap: 4.2rem; font-family: 'Orbitron', Arial, sans-serif;">
+    <a href="index.html" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); text-decoration: none;">INICIO</a>
+    <div class="menu-footer" style="position: relative;">
+  <button class="btn-footer" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); padding-bottom: 1.2em;">CATEGORÍAS</button>
+  <ul class="submenu-footer" style="position: absolute; left: 50%; top: 2.2em; transform: translateX(-50%); background: #000; color: #fff; list-style: none; padding: 0.5em 1em; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.18); z-index: 10; min-width: 140px;">
+  <li><button class="submenu-btn">PROTEÍNAS</button></li>
+  <li><button class="submenu-btn">CREATINAS</button></li>
+  <li><button class="submenu-btn">BCAAs</button></li>
+  <li><button class="submenu-btn">PREENTRENOS</button></li>
+  <li><button class="submenu-btn">TERMOGÉNICOS</button></li>
+  <li><button class="submenu-btn">COLÁGENOS</button></li>
+  <li><button class="submenu-btn">GLUTAMINAS</button></li>
+  <li><button class="submenu-btn">OMEGA 3</button></li>
+      </ul>
+    </div>
+    <div class="menu-footer" style="position: relative;">
+        <button class="btn-footer" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); padding-bottom: 1.2em;">MARCAS</button>
+        <ul class="submenu-footer" style="position: absolute; left: 50%; top: 2.2em; transform: translateX(-50%); background: #000; color: #fff; list-style: none; padding: 0.5em 1em; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.18); z-index: 10; min-width: 140px;">
+          <li><button class="submenu-btn" onclick="location.href='star.html'">STAR</button></li>
+          <li><button class="submenu-btn" onclick="location.href='ena.html'">ENA</button></li>
+          <li><button class="submenu-btn" onclick="location.href='gold.html'">BODY ADVANCE</button></li>
+          <li><button class="submenu-btn" onclick="location.href='gold.html'">GOLD</button></li>
+          <li><button class="submenu-btn" onclick="location.href='onefit.html'">ONE FIT</button></li>
+          <li><button class="submenu-btn" onclick="location.href='xtrenght.html'">XTRENGHT</button></li>
+          <li><button class="submenu-btn" onclick="location.href='optimum.html'">OPTIMUM</button></li>
+        </ul>
+    </div>
+  <button class="btn-footer" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45);" onclick="location.href='ofertas.html'">OFERTAS</button>
+  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=eudokiasuplements@gmail.com" target="_blank" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); text-decoration: none;">CONTACTO</a>
+  </nav>
+<script>
+// Menú desplegable animado para footer (mejorado)
+document.querySelectorAll('.menu-footer').forEach(function(menu){
+  var submenu = menu.querySelector('.submenu-footer');
+  menu.addEventListener('mouseenter', function(){
+    submenu.classList.add('show');
+  });
+  menu.addEventListener('mouseleave', function(){
+    submenu.classList.remove('show');
+  });
+});
+</script>
+</footer>
+  <div style="text-align: center; margin-top: 2.5rem;">
+    <span id="fade-text" class="fade-in" style="color: rgb(255, 255, 255); font-family: 'Orbitron', Arial, sans-serif; font-size: 2.5rem; font-weight: bold; display: block; text-transform: uppercase;">
+      ALTA CONCENTRACIÓN DE AMINOÁCIDOS PARA UNA RECUPERACIÓN ÓPTIMA
+    </span>
+  </div>
+
+  <main>
+  <section id="productos" class="productos">
+    <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
+      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 120px; object-fit: contain;" alt="Proteína">
+      <div class="info">
+        <h3 style="font-size: 0.8rem; font-weight: bold;">Star Nutrition Protein 1 KG</h3>
+        <div style="height: 1.2rem;"></div>
+        <p style="font-size: 1.4rem; margin-top: -0.71rem;">47.450 ARS</p>
+        <p style="font-size: 0.7rem; font-weight: normal; margin-top: 0.2rem;"><s>65.000 ARS</s></p>
+        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
+        </div>
+      </div>
+      <div class="fade-in" id="banda-descuento" style="position: absolute; top: 8px; right: -22px; width: 120px; height: 34px; background: linear-gradient(120deg, #00cbff 70%, #fff 100%); color: #fff; font-family: 'Orbitron', Arial, sans-serif; font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; justify-content: center; transform: rotate(20deg); box-shadow: 0 2px 12px #00cbff99; letter-spacing: 2px; z-index: 20; border-radius: 8px; text-shadow: 2px 2px 8px #000, 0 0 6px #00cbff;">27% OFF</div>
+    </div>
+    <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
+      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 120px; object-fit: contain;" alt="Proteína">
+      <div class="info">
+        <h3 style="font-size: 0.8rem; font-weight: bold;">ENA Sport Protein 1 KG</h3>
+        <div style="height: 1.2rem;"></div>
+        <p style="font-size: 1.4rem; margin-top: -0.71rem;">49.200 ARS</p>
+        <p style="font-size: 0.7rem; font-weight: normal; margin-top: 0.2rem;"><s>60.000 ARS</s></p>
+        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
+        </div>
+      </div>
+      <div class="fade-in" id="banda-descuento" style="position: absolute; top: 8px; right: -22px; width: 120px; height: 34px; background: linear-gradient(120deg, #00cbff 70%, #fff 100%); color: #fff; font-family: 'Orbitron', Arial, sans-serif; font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; justify-content: center; transform: rotate(20deg); box-shadow: 0 2px 12px #00cbff99; letter-spacing: 2px; z-index: 20; border-radius: 8px; text-shadow: 2px 2px 8px #000, 0 0 6px #00cbff;">18% OFF</div>
+    </div>
+    <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
+      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 0.8rem; font-weight: bold;">Xtrenght Nutrition Protein 1 KG</h3>
+          <div style="height: 1.2rem;"></div>
+          <p style="font-size: 1.4rem; margin-top: -0.71rem;">55.000 ARS</p>
+          <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
+        </div>
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
+        </div>
+      </div>
+    </div>
+    <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
+      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info">
+        <h3 style="font-size: 0.8rem; font-weight: bold;">Optimum Nutrition Protein 1 KG</h3>
+        <div style="height: 1.2rem;"></div>
+        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
+        </div>
+      </div>
+    </div>
+    <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
+      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info">
+        <h3 style="font-size: 0.8rem; font-weight: bold;">Isopure Protein 1 KG</h3>
+        <div style="height: 1.2rem;"></div>
+        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
+        </div>
+      </div>
+    </div>
+    <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
+      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info">
+        <h3 style="font-size: 0.8rem; font-weight: bold;">Dymatize Protein 1 KG</h3>
+        <div style="height: 1.2rem;"></div>
+        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
+        </div>
+      </div>
+    </div>
+    <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
+      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info">
+        <h3 style="font-size: 0.8rem; font-weight: bold;">BSN Protein 1 KG</h3>
+        <div style="height: 1.2rem;"></div>
+        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
+        </div>
+      </div>
+    </div>
+    <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
+      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info">
+        <h3 style="font-size: 0.8rem; font-weight: bold;">Transparent Labs Protein 1 KG</h3>
+        <div style="height: 1.2rem;"></div>
+        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
+          <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
+        </div>
+      </div>
+    </div>
+  </section>
+  </main>
+
+<footer class="fixed-footer" style="width: 100%; background: #000000; color: #fff; text-align: center; padding: 1rem 0; left: 0; bottom: 0; font-family: 'Orbitron', Arial, sans-serif;">
+  <p>&copy; 2026 EUDOKIA SUPLEMENTS. Todos los derechos reservados.</p>
+</footer>
+<script>
+  // Fade-in para texto principal y bloques de producto
+  window.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('fade-text').classList.add('visible');
+    // Fade-in para todos los bloques de producto
+    var productos = document.querySelectorAll('.producto.fade-in');
+    productos.forEach(function(el, i) {
+      setTimeout(function() {
+        // Aplica fade-in al bloque
+        el.classList.add('visible');
+        // Aplica fade-in a la banda si existe
+        var banda = el.querySelector('#banda-descuento');
+        if (banda) banda.classList.add('visible');
+      }, 350 + i * 120);
+    });
+  });
+
+  document.getElementById('busqueda').addEventListener('input', function() {
+    var filtro = this.value.toLowerCase();
+    var productos = document.querySelectorAll('.producto');
+    productos.forEach(function(producto) {
+      var texto = producto.innerText.toLowerCase();
+      producto.style.display = texto.includes(filtro) ? '' : 'none';
+    });
+  });
+</script>
+</body>
+</html>
