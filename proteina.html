@@ -7,22 +7,6 @@
   <link rel="stylesheet" href="style.css">
   <title>EUDOKIA</title>
   <style>
-    /* Transición fade para el texto principal y los bloques de producto */
-    body {
-      margin: 0;
-      min-height: 100vh;
-      padding: 1rem 1rem 180px;
-      box-sizing: border-box;
-      color: #fff;
-      background-image: url('https://i.postimg.cc/yYghcDn7/bg.jpg');
-      background-color: #000;
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-position: center center;
-    }
-    *, *::before, *::after {
-      box-sizing: inherit;
-    }
     .fade-in, .producto.fade-in, #banda-descuento.fade-in {
       opacity: 0;
       transition: opacity 2.2s cubic-bezier(.25,.8,.25,1);
@@ -30,84 +14,385 @@
     .fade-in.visible, .producto.fade-in.visible, #banda-descuento.fade-in.visible {
       opacity: 1;
     }
-    main {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-    }
-    .productos {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      grid-auto-rows: minmax(520px, auto);
-      gap: 3rem;
-      max-width: 1320px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 2rem 0 3rem;
-    }
-    .producto {
-      width: 100%;
-      max-width: 440px;
-      min-height: 520px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-sizing: border-box;
-      margin: 0 auto;
-      padding: 1.4rem;
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.65);
-      background: rgba(10, 10, 10, 0.92);
-      border: none;
-      border-radius: 18px;
-      position: relative;
-      overflow: visible;
-      transition: transform 0.18s ease, box-shadow 0.35s ease;
-    }
-    .producto:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.75);
-    }
-    .producto img {
-      width: 100%;
-      max-height: 260px;
-      object-fit: contain;
-      display: block;
-      margin-bottom: 1.2rem;
-    }
-    .producto .info {
-      padding: 0 0.2rem;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
     #fade-text {
       display: block;
       margin: 2.5rem auto 1.2rem;
       max-width: 1200px;
-      padding: 0 1rem;
     }
-    .fixed-footer {
+    #banda-descuento {
+      position: absolute;
+      top: 8px;
+      right: -22px;
+      width: 120px;
+      height: 34px;
+      background: linear-gradient(120deg, #00cbff 70%, #fff 100%);
+      color: #fff;
+      font-family: 'Orbitron', Arial, sans-serif;
+      font-size: 1.1rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(20deg);
+      box-shadow: 0 2px 12px #00cbff99;
+      letter-spacing: 2px;
+      z-index: 20;
+      border-radius: 8px;
+      text-shadow: 2px 2px 8px #000, 0 0 6px #00cbff;
+    }
+    main {
+      display: flex;
+      justify-content: center;
+    }
+    .info-button {
+      font-family: 'Orbitron', Arial, sans-serif;
+      cursor: pointer;
+      background: #2fa84c !important;
+      color: #ffffff !important;
+      border: none;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      text-transform: uppercase;
+      font-weight: bold;
+      transition: transform 0.18s ease, box-shadow 0.2s ease;
+      order: -1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+    .info-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+    }
+    .producto {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 520px;
+    }
+    .producto .info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .info-modal-overlay {
+      display: none;
       position: fixed;
-      bottom: 0;
-      left: 0;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1rem;
+    }
+    .info-modal-overlay.visible {
+      display: flex;
+    }
+    .info-modal {
+      width: min(75vw, 1200px);
+      max-width: 1200px;
+      max-height: 85vh;
+      background: #0c0c0c;
+      border: 2px solid #00cbff;
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.45);
+      color: #fff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateY(20px) scale(0.96);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      overflow: hidden;
+    }
+    .info-modal-overlay.visible {
+      animation: overlay-fade 0.25s ease forwards;
+    }
+    .info-modal-overlay.visible .info-modal {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      animation: modal-pop 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+    }
+    @keyframes overlay-fade {
+      from { background: rgba(0, 0, 0, 0); }
+      to { background: rgba(0, 0, 0, 0.75); }
+    }
+    @keyframes modal-pop {
+      0% { opacity: 0; transform: translateY(20px) scale(0.96); }
+      60% { opacity: 1; transform: translateY(-8px) scale(1.03); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .info-modal h2 {
+      margin: 0 0 1rem;
+      font-size: 2.2rem;
+    }
+    .info-modal .modal-content {
+      display: flex;
+      gap: 1.5rem;
+      height: 100%;
+    }
+    .info-modal .modal-image {
+      width: 45%;
+      min-width: 220px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.8rem;
+    }
+    .info-modal .modal-image img {
       width: 100%;
-      z-index: 999;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 14px;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.25);
     }
-    .producto .info h3 {
-      font-size: 1rem !important;
+    .info-modal .modal-details {
+      width: 55%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .producto .info p {
-      font-size: 1.6rem !important;
+    .info-modal .modal-body {
+      flex: 1;
+      overflow: auto;
+      font-size: 1.25rem;
+      line-height: 1.8;
     }
-    .producto .info p s {
-      font-size: 0.8rem !important;
+    .cert-title {
+      margin: 1.25rem 0 0.65rem;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 1.05rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
-    .producto .info .precio {
-      font-size: 1rem !important;
+    .certifications {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    .certifications img {
+      height: 84px;
+      width: auto;
+      min-width: 84px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      padding: 0.55rem;
+      box-shadow: 0 0 16px rgba(0,0,0,0.25);
+    }
+    .favorite-btn {
+      font-family: 'Orbitron', Arial, sans-serif;
+      cursor: pointer;
+      background: transparent;
+      color: #fff;
+      border: 2px solid #00cbff;
+      padding: 0.9rem 1.15rem;
+      border-radius: 10px;
+      text-transform: uppercase;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      transition: transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    .favorite-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 14px rgba(0, 203, 255, 0.24);
+    }
+    .favorite-btn .star-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      background: transparent;
+      color: #00cbff;
+      border: 1px solid rgba(0, 203, 255, 0.45);
+      font-size: 1rem;
+      transition: background 0.2s ease, color 0.2s ease, text-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .favorite-btn.active {
+      color: #000;
+      background: #00cbff;
+      border-color: #00cbff;
+      box-shadow: 0 0 22px rgba(0, 203, 255, 0.55);
+    }
+    .favorite-btn.active .star-icon {
+      background: #ffffff;
+      color: #00cbff;
+      border-color: #00cbff;
+      text-shadow: 0 0 16px rgba(0, 203, 255, 0.95);
+    }
+    .modal-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 0.85rem;
+      align-items: center;
+    }
+    .favorite-btn,
+    .action-btn {
+      flex: 1 1 0;
+      min-width: 0;
+      font-family: 'Orbitron', Arial, sans-serif;
+      cursor: pointer;
+      background: transparent;
+      color: #fff;
+      border: 2px solid #00cbff;
+      padding: 0.9rem 1.2rem;
+      border-radius: 10px;
+      text-transform: uppercase;
+      font-weight: bold;
+      transition: transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 14px rgba(0, 203, 255, 0.24);
+    }
+    .action-btn.remove-mode {
+      color: #ff3b3b;
+      border-color: #ff3b3b;
+      background: rgba(255, 59, 59, 0.08);
+    }
+    .action-btn.remove-mode:hover {
+      background: rgba(255, 59, 59, 0.18);
+      box-shadow: 0 0 18px rgba(255, 59, 59, 0.35);
+    }
+    .buy-now-btn {
+      background: #00cbff;
+      color: #000;
+      border-color: #00cbff;
+    }
+    .quantity-panel {
+      margin-top: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 1rem 1rem 1.2rem;
+      width: min(100%, 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 0.85rem;
+    }
+    .quantity-header {
+      font-family: 'Orbitron', Arial, sans-serif;
+      color: #fff;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .quantity-btn {
+      font-family: 'Orbitron', Arial, sans-serif;
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 2px solid #00cbff;
+      border-radius: 12px;
+      background: transparent;
+      color: #00cbff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.18s ease;
+    }
+    .quantity-btn:hover {
+      background: rgba(0, 203, 255, 0.12);
+      transform: translateY(-1px);
+    }
+    #cart-quantity-value {
+      min-width: 2rem;
+      text-align: center;
+      font-family: 'Orbitron', Arial, sans-serif;
+      font-size: 1.2rem;
+      color: #fff;
+    }
+    .confirm-btn {
+      align-self: center;
+      background: #00cbff;
+      color: #000;
+      border-color: #00cbff;
+    }
+    .quality-label {
+      margin-top: 1.2rem;
+      margin-bottom: 0.9rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      display: inline-block;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+      font-size: 0.95rem;
+    }
+    .quality-concentrada {
+      color: #d4af37;
+      background: rgba(212, 175, 55, 0.14);
+    }
+    .quality-aislada {
+      color: #d3d3d3;
+      background: rgba(211, 211, 211, 0.16);
+    }
+    .quality-hidrolizada {
+      color: #7ed4ff;
+      background: rgba(126, 212, 255, 0.18);
+    }
+    .quality-vegetal {
+      color: #57c24b;
+      background: rgba(87, 194, 75, 0.16);
+    }
+    .protein-amount {
+      margin-top: 0.75rem;
+      font-weight: bold;
+      color: #ffffff;
+      font-size: 1.12rem;
+      opacity: 0.95;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      width: 100%;
+    }
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.8rem;
+      flex: 1;
+    }
+    .modal-close {
+      background: #00cbff;
+      border: none;
+      color: #000;
+      padding: 0.6rem 1rem;
+      font-family: 'Orbitron', Arial, sans-serif;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      white-space: nowrap;
+      align-self: flex-start;
     }
   </style>
 </head>
-<body style="padding-bottom: 120px;">
+<body style="padding-bottom: 200px;">
     <header>
       <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
         <div style="display: flex; align-items: center;">
@@ -138,11 +423,10 @@
             <button class="btn-header btn-favoritos" style="margin-left: 0.5em; margin-right: 1em; justify-content: center; align-items: center; min-height: 56px;">
               <img src="https://i.postimg.cc/jdzS9Mw1/star.png" alt="icono favoritos" style="height: 38px; width: auto; margin-right: 0.5em;" />
               <span style="display: flex; align-items: center; justify-content: center; width: 100%;">Favoritos</span>
-            </button>
-          <button class="btn-header btn-carrito" style="margin-left: 0.5em; margin-right: 1em; justify-content: center; align-items: center;">
-            <img src="https://i.postimg.cc/BZL8hQQm/carrito.png" alt="icono carrito" style="height: 38px; width: auto; margin-right: 0.5em;" />
-            <span style="display: flex; align-items: center; justify-content: center; width: 100%;">Carrito</span>
-          </button>
+            <button class="btn-header btn-carrito" style="margin-left: 0.5em; margin-right: 1em; justify-content: center; align-items: center;" onclick="location.href='carrito.html'">
+  <img src="https://i.postimg.cc/BZL8hQQm/carrito.png" alt="icono carrito" style="height: 38px; width: auto; margin-right: 0.5em;" />
+  <span style="display: flex; align-items: center; justify-content: center; width: 100%;">Carrito</span>
+</button>
         </nav>
       </div>
     </header>
@@ -150,32 +434,32 @@
   <nav style="display: flex; align-items: center; justify-content: center; gap: 4.2rem; font-family: 'Orbitron', Arial, sans-serif;">
     <a href="index.html" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); text-decoration: none;">INICIO</a>
     <div class="menu-footer" style="position: relative;">
-  <button class="btn-footer" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); padding-bottom: 1.2em;">CATEGORÍAS</button>
-  <ul class="submenu-footer" style="position: absolute; left: 50%; top: 2.2em; transform: translateX(-50%); background: #000; color: #fff; list-style: none; padding: 0.5em 1em; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.18); z-index: 10; min-width: 140px;">
-  <li><button class="submenu-btn">PROTEÍNAS</button></li>
-  <li><button class="submenu-btn">CREATINAS</button></li>
-  <li><button class="submenu-btn">BCAAs</button></li>
-  <li><button class="submenu-btn">PREENTRENOS</button></li>
-  <li><button class="submenu-btn">TERMOGÉNICOS</button></li>
-  <li><button class="submenu-btn">COLÁGENOS</button></li>
-  <li><button class="submenu-btn">GLUTAMINAS</button></li>
-  <li><button class="submenu-btn">OMEGA 3</button></li>
+      <button class="btn-footer" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); padding-bottom: 1.2em;">CATEGORÍAS</button>
+      <ul class="submenu-footer" style="position: absolute; left: 50%; top: 2.2em; transform: translateX(-50%); background: #000; color: #fff; list-style: none; padding: 0.5em 1em; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.18); z-index: 100; min-width: 140px;">
+        <li><button class="submenu-btn">PROTEÍNAS</button></li>
+        <li><button class="submenu-btn">CREATINAS</button></li>
+        <li><button class="submenu-btn">BCAAs</button></li>
+        <li><button class="submenu-btn">PREENTRENOS</button></li>
+        <li><button class="submenu-btn">TERMOGÉNICOS</button></li>
+        <li><button class="submenu-btn">COLÁGENOS</button></li>
+        <li><button class="submenu-btn">GLUTAMINAS</button></li>
+        <li><button class="submenu-btn">OMEGA 3</button></li>
       </ul>
     </div>
     <div class="menu-footer" style="position: relative;">
-        <button class="btn-footer" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); padding-bottom: 1.2em;">MARCAS</button>
-        <ul class="submenu-footer" style="position: absolute; left: 50%; top: 2.2em; transform: translateX(-50%); background: #000; color: #fff; list-style: none; padding: 0.5em 1em; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.18); z-index: 10; min-width: 140px;">
-          <li><button class="submenu-btn" onclick="location.href='star.html'">STAR</button></li>
-          <li><button class="submenu-btn" onclick="location.href='ena.html'">ENA</button></li>
-          <li><button class="submenu-btn" onclick="location.href='gold.html'">BODY ADVANCE</button></li>
-          <li><button class="submenu-btn" onclick="location.href='gold.html'">GOLD</button></li>
-          <li><button class="submenu-btn" onclick="location.href='onefit.html'">ONE FIT</button></li>
-          <li><button class="submenu-btn" onclick="location.href='xtrenght.html'">XTRENGHT</button></li>
-          <li><button class="submenu-btn" onclick="location.href='optimum.html'">OPTIMUM</button></li>
-        </ul>
+      <button class="btn-footer" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); padding-bottom: 1.2em;">MARCAS</button>
+      <ul class="submenu-footer" style="position: absolute; left: 50%; top: 2.2em; transform: translateX(-50%); background: #000; color: #fff; list-style: none; padding: 0.5em 1em; border-radius: 8px; box-shadow: 0 2px 12px rgba(0,0,0,0.18); z-index: 100; min-width: 140px;">
+        <li><button class="submenu-btn" onclick="location.href='star.html'">STAR</button></li>
+        <li><button class="submenu-btn" onclick="location.href='ena.html'">ENA</button></li>
+        <li><button class="submenu-btn" onclick="location.href='gold.html'">BODY ADVANCE</button></li>
+        <li><button class="submenu-btn" onclick="location.href='gold.html'">GOLD</button></li>
+        <li><button class="submenu-btn" onclick="location.href='onefit.html'">ONE FIT</button></li>
+        <li><button class="submenu-btn" onclick="location.href='xtrenght.html'">XTRENGHT</button></li>
+        <li><button class="submenu-btn" onclick="location.href='optimum.html'">OPTIMUM</button></li>
+      </ul>
     </div>
-  <button class="btn-footer" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45);" onclick="location.href='ofertas.html'">OFERTAS</button>
-  <a href="https://mail.google.com/mail/?view=cm&fs=1&to=eudokiasuplements@gmail.com" target="_blank" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); text-decoration: none;">CONTACTO</a>
+    <button class="btn-footer" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45);" onclick="location.href='ofertas.html'">OFERTAS</button>
+    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=eudokiasuplements@gmail.com" target="_blank" style="background: none; border: none; color: #fff; font-family: inherit; font-size: 1.35rem; font-weight: bold; cursor: pointer; text-shadow: 2px 2px 8px rgba(0,0,0,0.45); text-decoration: none;">CONTACTO</a>
   </nav>
 <script>
 // Menú desplegable animado para footer (mejorado)
@@ -199,14 +483,15 @@ document.querySelectorAll('.menu-footer').forEach(function(menu){
   <main>
   <section id="productos" class="productos">
     <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
-      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 120px; object-fit: contain;" alt="Proteína">
-      <div class="info">
-        <h3 style="font-size: 0.8rem; font-weight: bold;">Star Nutrition Protein 1 KG</h3>
-        <div style="height: 1.2rem;"></div>
-        <p style="font-size: 1.4rem; margin-top: -0.71rem;">47.450 ARS</p>
-        <p style="font-size: 0.7rem; font-weight: normal; margin-top: 0.2rem;"><s>65.000 ARS</s></p>
-        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
-        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 0.8rem; font-weight: bold;">Star Nutrition Protein 1 KG</h3>
+          <p style="font-size: 1.4rem; margin-top: -0.71rem;">47.450 ARS</p>
+          <p style="font-size: 0.7rem; font-weight: normal; margin-top: 0.1rem;"><s>65.000 ARS</s></p>
+          <div class="precio" style="color: #2f9e4b; margin-top: 1rem;">EN STOCK</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
         </div>
@@ -214,14 +499,15 @@ document.querySelectorAll('.menu-footer').forEach(function(menu){
       <div class="fade-in" id="banda-descuento" style="position: absolute; top: 8px; right: -22px; width: 120px; height: 34px; background: linear-gradient(120deg, #00cbff 70%, #fff 100%); color: #fff; font-family: 'Orbitron', Arial, sans-serif; font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; justify-content: center; transform: rotate(20deg); box-shadow: 0 2px 12px #00cbff99; letter-spacing: 2px; z-index: 20; border-radius: 8px; text-shadow: 2px 2px 8px #000, 0 0 6px #00cbff;">27% OFF</div>
     </div>
     <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
-      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 120px; object-fit: contain;" alt="Proteína">
-      <div class="info">
-        <h3 style="font-size: 0.8rem; font-weight: bold;">ENA Sport Protein 1 KG</h3>
-        <div style="height: 1.2rem;"></div>
-        <p style="font-size: 1.4rem; margin-top: -0.71rem;">49.200 ARS</p>
-        <p style="font-size: 0.7rem; font-weight: normal; margin-top: 0.2rem;"><s>60.000 ARS</s></p>
-        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
-        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+      <img src="https://i.postimg.cc/pL82Mfqx/proteina2-(1).jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 0.8rem; font-weight: bold;">ENA Sport Protein 1 KG</h3>
+          <p style="font-size: 1.4rem; margin-top: -0.71rem;">49.200 ARS</p>
+          <p style="font-size: 0.7rem; font-weight: normal; margin-top: 0.1rem;"><s>60.000 ARS</s></p>
+          <div class="precio" style="color: #2f9e4b; margin-top: 1rem;">EN STOCK</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
         </div>
@@ -229,13 +515,13 @@ document.querySelectorAll('.menu-footer').forEach(function(menu){
       <div class="fade-in" id="banda-descuento" style="position: absolute; top: 8px; right: -22px; width: 120px; height: 34px; background: linear-gradient(120deg, #00cbff 70%, #fff 100%); color: #fff; font-family: 'Orbitron', Arial, sans-serif; font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; justify-content: center; transform: rotate(20deg); box-shadow: 0 2px 12px #00cbff99; letter-spacing: 2px; z-index: 20; border-radius: 8px; text-shadow: 2px 2px 8px #000, 0 0 6px #00cbff;">18% OFF</div>
     </div>
     <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
-      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <img src="https://i.postimg.cc/MpRWJ7dW/proteina2-(2).jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
       <div class="info" style="display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <h3 style="font-size: 0.8rem; font-weight: bold;">Xtrenght Nutrition Protein 1 KG</h3>
           <div style="height: 1.2rem;"></div>
           <p style="font-size: 1.4rem; margin-top: -0.71rem;">55.000 ARS</p>
-          <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
+          <div class="precio" style="color: #2f9e4b; margin-top: 1rem;">EN STOCK</div>
         </div>
         <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
@@ -244,65 +530,75 @@ document.querySelectorAll('.menu-footer').forEach(function(menu){
       </div>
     </div>
     <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
-      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
-      <div class="info">
-        <h3 style="font-size: 0.8rem; font-weight: bold;">Optimum Nutrition Protein 1 KG</h3>
-        <div style="height: 1.2rem;"></div>
-        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
-        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
-        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+      <img src="https://i.postimg.cc/JzJ1CNPR/proteina2-(3).jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 0.8rem; font-weight: bold;">Optimum Nutrition Protein 1 KG</h3>
+          <div style="height: 1.2rem;"></div>
+          <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+          <div class="precio" style="color: #2f9e4b; margin-top: 1rem;">EN STOCK</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
         </div>
       </div>
     </div>
     <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
-      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
-      <div class="info">
-        <h3 style="font-size: 0.8rem; font-weight: bold;">Isopure Protein 1 KG</h3>
-        <div style="height: 1.2rem;"></div>
-        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
-        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
-        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+      <img src="https://i.postimg.cc/cLYsGRXS/proteina2-(4).jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 0.8rem; font-weight: bold;">Isopure Protein 1 KG</h3>
+          <div style="height: 1.2rem;"></div>
+          <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+          <div class="precio" style="color: #2f9e4b; margin-top: 1rem;">EN STOCK</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
         </div>
       </div>
     </div>
     <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
-      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
-      <div class="info">
-        <h3 style="font-size: 0.8rem; font-weight: bold;">Dymatize Protein 1 KG</h3>
-        <div style="height: 1.2rem;"></div>
-        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
-        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
-        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+      <img src="https://i.postimg.cc/1zQym8jZ/proteina2-(5).jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 0.8rem; font-weight: bold;">Dymatize Protein 1 KG</h3>
+          <div style="height: 1.2rem;"></div>
+          <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+          <div class="precio" style="color: #2f9e4b; margin-top: 1rem;">EN STOCK</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
         </div>
       </div>
     </div>
     <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
-      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
-      <div class="info">
-        <h3 style="font-size: 0.8rem; font-weight: bold;">BSN Protein 1 KG</h3>
-        <div style="height: 1.2rem;"></div>
-        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
-        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
-        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+      <img src="https://i.postimg.cc/zfrqzycY/proteina2-(6).jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 0.8rem; font-weight: bold;">BSN Protein 1 KG</h3>
+          <div style="height: 1.2rem;"></div>
+          <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+          <div class="precio" style="color: #2f9e4b; margin-top: 1rem;">EN STOCK</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
         </div>
       </div>
     </div>
     <div class="producto fade-in" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); margin-top: 1.3rem; position: relative; overflow: visible; transition: transform 0.18s, box-shadow 0.35s;">
-      <img src="https://i.postimg.cc/NFWHpxbB/proteina.jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
-      <div class="info">
-        <h3 style="font-size: 0.8rem; font-weight: bold;">Transparent Labs Protein 1 KG</h3>
-        <div style="height: 1.2rem;"></div>
-        <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
-        <div class="precio" style="color: #2f9e4b;">EN STOCK</div>
-        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+      <img src="https://i.postimg.cc/y89VCmvd/proteina2-(7).jpg" style="display: block; margin: 0 auto; width: 100%; height: 172px; object-fit: contain;" alt="Proteína">
+      <div class="info" style="display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <h3 style="font-size: 0.8rem; font-weight: bold;">Transparent Labs Protein 1 KG</h3>
+          <div style="height: 1.2rem;"></div>
+          <p style="font-size: 1.4rem; margin-top: -0.71rem;">32.000 ARS</p>
+          <div class="precio" style="color: #2f9e4b; margin-top: 1rem;">EN STOCK</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">COMPRAR</a></button>
           <button style="font-family: 'Orbitron', Arial, sans-serif;"><a href="proteina.html" style="color: #ffffff; text-decoration: none; font-family: inherit;">AÑADIR AL CARRITO</a></button>
         </div>
@@ -311,7 +607,47 @@ document.querySelectorAll('.menu-footer').forEach(function(menu){
   </section>
   </main>
 
-<footer class="fixed-footer" style="width: 100%; background: #000000; color: #fff; text-align: center; padding: 1rem 0; left: 0; bottom: 0; font-family: 'Orbitron', Arial, sans-serif;">
+  <div id="info-modal-overlay" class="info-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
+    <div class="info-modal">
+      <div class="modal-content">
+        <div class="modal-image">
+          <img id="info-modal-img" src="" alt="Imagen del producto" />
+        </div>
+        <div class="modal-details">
+          <div class="modal-header">
+            <h2 id="info-modal-title">Información del producto</h2>
+            <button type="button" class="modal-close" onclick="closeInfoModal()">CERRAR</button>
+          </div>
+          <div class="modal-body">
+            <p id="info-modal-text">añadir texto</p>
+            <p id="info-modal-quality" class="quality-label quality-concentrada">CONCENTRADA</p>
+            <p id="info-modal-protein" class="protein-amount">Proteína por servicio: 24 g</p>
+            <p class="cert-title">Certificaciones de calidad</p>
+            <div id="info-modal-certifications" class="certifications"></div>
+          </div>
+          <div class="modal-actions">
+            <button id="info-modal-favorite" type="button" class="favorite-btn" onclick="toggleFavorite()">
+              <span class="star-icon">☆</span>
+              <span id="favorite-label">Añadir a favoritos</span>
+            </button>
+            <button id="info-modal-addcart" type="button" class="action-btn" onclick="showCartQuantity()">Añadir al carrito</button>
+            <button id="info-modal-buy" type="button" class="action-btn buy-now-btn" onclick="buyNow()">Comprar ahora</button>
+          </div>
+          <div id="cart-quantity-panel" class="quantity-panel" style="display:none;">
+            <div class="quantity-header">Cantidad a añadir</div>
+            <div class="quantity-controls">
+              <button type="button" class="quantity-btn" onclick="changeCartQuantity(-1)">-</button>
+              <span id="cart-quantity-value">1</span>
+              <button type="button" class="quantity-btn" onclick="changeCartQuantity(1)">+</button>
+            </div>
+            <button type="button" class="action-btn confirm-btn" onclick="confirmAddToCart()">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<footer class="fixed-footer" style="width: 100%; background: #000000; color: #fff; text-align: center; padding: 1rem 0; position: fixed; bottom: 0; left: 0; z-index: 1000; font-family: 'Orbitron', Arial, sans-serif;">
   <p>&copy; 2026 EUDOKIA SUPLEMENTS. Todos los derechos reservados.</p>
 </footer>
 <script>
@@ -338,6 +674,232 @@ document.querySelectorAll('.menu-footer').forEach(function(menu){
       var texto = producto.innerText.toLowerCase();
       producto.style.display = texto.includes(filtro) ? '' : 'none';
     });
+  });
+
+  var productImageMap = {
+    'Star Nutrition Protein 1 KG': 'https://i.postimg.cc/NFWHpxbB/proteina.jpg',
+    'ENA Sport Protein 1 KG': 'https://i.postimg.cc/pL82Mfqx/proteina2-(1).jpg',
+    'Xtrenght Nutrition Protein 1 KG': 'https://i.postimg.cc/MpRWJ7dW/proteina2-(2).jpg',
+    'Optimum Nutrition Protein 1 KG': 'https://i.postimg.cc/JzJ1CNPR/proteina2-(3).jpg',
+    'Isopure Protein 1 KG': 'https://i.postimg.cc/cLYsGRXS/proteina2-(4).jpg',
+    'Dymatize Protein 1 KG': 'https://i.postimg.cc/1zQym8jZ/proteina2-(5).jpg',
+    'BSN Protein 1 KG': 'https://i.postimg.cc/zfrqzycY/proteina2-(6).jpg',
+    'Transparent Labs Protein 1 KG': 'https://i.postimg.cc/y89VCmvd/proteina2-(7).jpg'
+  };
+
+  var productTextMap = {
+    'Star Nutrition Protein 1 KG': 'Esta proteína de suero está diseñada para recuperación muscular después del entrenamiento, con un perfil enfocado en brindar aminoácidos de calidad para apoyar el crecimiento muscular y la reparación de tejidos.',
+    'ENA Sport Protein 1 KG': 'Esta formulación está pensada para deportistas que buscan una suplementación proteica premium, con un enfoque en la recuperación post-entrenamiento y el aporte de proteína por porción para apoyar el desarrollo muscular.',
+    'Xtrenght Nutrition Protein 1 KG': 'Esta proteína está orientada a quienes entrenan con intensidad y requieren una fuente confiable de aminoácidos, destacándose por su mezcla equilibrada para ayudar a mantener masa muscular mientras se trabaja en el rendimiento.',
+    'Optimum Nutrition Protein 1 KG': 'Esta opción es conocida por su calidad y pureza, ofreciendo una fuente de proteína de suero muy valorada entre atletas que buscan optimizar la recuperación y el crecimiento muscular sin sacrificar la digestibilidad.',
+    'Isopure Protein 1 KG': 'Esta proteína se caracteriza por su fórmula limpia y de rápida absorción, pensada para quienes desean un suplemento sin muchos ingredientes añadidos, ideal para soporte muscular en etapas de entrenamiento exigente.',
+    'Dymatize Protein 1 KG': 'Esta proteína está orientada a entrenamientos intensos y procesos de recuperación acelerada, con una fórmula diseñada para absorberse rápidamente y contribuir al mantenimiento de la masa muscular tras el ejercicio.',
+    'BSN Protein 1 KG': 'Esta alternativa ofrece un perfil pensado para usuarios que buscan una proteína sabrosa y versátil, enfocada en apoyar la recuperación diaria y aportar ingredientes de calidad en cada porción.',
+    'Transparent Labs Protein 1 KG': 'Esta fórmula transparente y de alta calidad está pensada para deportistas exigentes, con ingredientes seleccionados para respaldar la recuperación muscular y el desarrollo del tejido proteico sin aditivos innecesarios.'
+  };
+
+  var productQualityMap = {
+    'Star Nutrition Protein 1 KG': 'CONCENTRADA',
+    'ENA Sport Protein 1 KG': 'AISLADA',
+    'Xtrenght Nutrition Protein 1 KG': 'HIDROLIZADA',
+    'Optimum Nutrition Protein 1 KG': 'CONCENTRADA',
+    'Isopure Protein 1 KG': 'AISLADA',
+    'Dymatize Protein 1 KG': 'HIDROLIZADA',
+    'BSN Protein 1 KG': 'VEGETAL',
+    'Transparent Labs Protein 1 KG': 'CONCENTRADA'
+  };
+
+  var productProteinAmountMap = {
+    'Star Nutrition Protein 1 KG': '24 g',
+    'ENA Sport Protein 1 KG': '24 g',
+    'Xtrenght Nutrition Protein 1 KG': '25 g',
+    'Optimum Nutrition Protein 1 KG': '24 g',
+    'Isopure Protein 1 KG': '25 g',
+    'Dymatize Protein 1 KG': '25 g',
+    'BSN Protein 1 KG': '24 g',
+    'Transparent Labs Protein 1 KG': '25 g'
+  };
+
+  var productCertificationsMap = {
+    'Star Nutrition Protein 1 KG': ['ANMAT', 'RNPA'],
+    'ENA Sport Protein 1 KG': ['ANMAT', 'RNPA'],
+    'Xtrenght Nutrition Protein 1 KG': ['ANMAT', 'RNPA'],
+    'Optimum Nutrition Protein 1 KG': ['ANMAT', 'RNPA'],
+    'Isopure Protein 1 KG': ['ANMAT', 'SIN TACC', 'RNPA'],
+    'Dymatize Protein 1 KG': ['ANMAT', 'RNPA'],
+    'BSN Protein 1 KG': ['ANMAT', 'RNPA'],
+    'Transparent Labs Protein 1 KG': ['ANMAT', 'SIN TACC', 'RNPA']
+  };
+
+  function renderCertifications(productName) {
+    var certContainer = document.getElementById('info-modal-certifications');
+    certContainer.innerHTML = '';
+    var certs = productCertificationsMap[productName] || ['ANMAT', 'RNPA'];
+    var logoMap = {
+      'ANMAT': 'https://i.postimg.cc/kMbWqC2q/Anmat.png',
+      'RNPA': 'https://i.postimg.cc/05w7PvzQ/rnpa.png',
+      'SIN TACC': 'https://i.postimg.cc/vTfnzrJJ/sin-tacc-icon.png'
+    };
+    certs.forEach(function(cert) {
+      var img = document.createElement('img');
+      img.src = logoMap[cert] || '';
+      img.alt = cert + ' logo';
+      img.title = cert;
+      certContainer.appendChild(img);
+    });
+  }
+
+  function updateFavoriteButton(productName) {
+    var favorites = JSON.parse(localStorage.getItem('favorites') || '{}');
+    var isFavorite = !!favorites[productName];
+    var btn = document.getElementById('info-modal-favorite');
+    var star = btn.querySelector('.star-icon');
+    var label = btn.querySelector('span:last-child');
+    if (isFavorite) {
+      btn.classList.add('active');
+      star.textContent = '★';
+      label.textContent = 'Añadido a favoritos';
+    } else {
+      btn.classList.remove('active');
+      star.textContent = '☆';
+      label.textContent = 'Añadir a favoritos';
+    }
+  }
+
+  var cartProductName = null;
+  var cartQuantity = 1;
+
+  function toggleFavorite() {
+    var productName = document.getElementById('info-modal-title').textContent;
+    var favorites = JSON.parse(localStorage.getItem('favorites') || '{}');
+    var btn = document.getElementById('info-modal-favorite');
+    var star = btn.querySelector('.star-icon');
+    var label = btn.querySelector('span:last-child');
+    var isFavorite = !favorites[productName];
+    if (isFavorite) {
+      favorites[productName] = true;
+      btn.classList.add('active');
+      star.textContent = '★';
+      label.textContent = 'Añadido a favoritos';
+    } else {
+      delete favorites[productName];
+      btn.classList.remove('active');
+      star.textContent = '☆';
+      label.textContent = 'Añadir a favoritos';
+    }
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }
+
+  function showCartQuantity() {
+    var panel = document.getElementById('cart-quantity-panel');
+    var addBtn = document.getElementById('info-modal-addcart');
+    if (addBtn.classList.contains('remove-mode')) {
+      removeCartItem();
+      return;
+    }
+    if (panel.style.display === 'flex') {
+      panel.style.display = 'none';
+      return;
+    }
+    cartProductName = document.getElementById('info-modal-title').textContent;
+    cartQuantity = 1;
+    document.getElementById('cart-quantity-value').textContent = cartQuantity;
+    panel.style.display = 'flex';
+  }
+
+  function changeCartQuantity(amount) {
+    cartQuantity = Math.max(1, cartQuantity + amount);
+    document.getElementById('cart-quantity-value').textContent = cartQuantity;
+  }
+
+  function confirmAddToCart() {
+    var panel = document.getElementById('cart-quantity-panel');
+    var addBtn = document.getElementById('info-modal-addcart');
+    var cart = JSON.parse(localStorage.getItem('cart') || '{}');
+    cart[cartProductName] = cartQuantity;
+    localStorage.setItem('cart', JSON.stringify(cart));
+    addBtn.textContent = 'Quitar del carrito';
+    addBtn.classList.add('active', 'remove-mode');
+    panel.style.display = 'none';
+  }
+
+  function removeCartItem() {
+    var productName = document.getElementById('info-modal-title').textContent;
+    var cart = JSON.parse(localStorage.getItem('cart') || '{}');
+    delete cart[productName];
+    localStorage.setItem('cart', JSON.stringify(cart));
+    var addBtn = document.getElementById('info-modal-addcart');
+    addBtn.textContent = 'Añadir al carrito';
+    addBtn.classList.remove('active', 'remove-mode');
+    document.getElementById('cart-quantity-panel').style.display = 'none';
+  }
+
+  function buyNow() {
+    window.alert('Proceder a comprar este producto ahora.');
+  }
+
+  function openInfoModal(productName) {
+    document.getElementById('info-modal-title').textContent = productName;
+    document.getElementById('info-modal-text').textContent = productTextMap[productName] || 'Información del producto próximamente.';
+    var quality = productQualityMap[productName] || 'CONCENTRADA';
+    var qualityElem = document.getElementById('info-modal-quality');
+    qualityElem.textContent = quality;
+    qualityElem.className = 'quality-label quality-' + quality.toLowerCase();
+    var proteinAmount = productProteinAmountMap[productName] || '24 g';
+    document.getElementById('info-modal-protein').textContent = 'Proteína por servicio: ' + proteinAmount;
+    renderCertifications(productName);
+    updateFavoriteButton(productName);
+    updateCartButton(productName);
+    document.getElementById('info-modal-img').src = productImageMap[productName] || 'https://i.postimg.cc/NFWHpxbB/proteina.jpg';
+    document.getElementById('info-modal-img').alt = productName;
+    document.getElementById('cart-quantity-panel').style.display = 'none';
+    document.getElementById('info-modal-overlay').classList.add('visible');
+  }
+
+  function updateCartButton(productName) {
+    var cart = JSON.parse(localStorage.getItem('cart') || '{}');
+    var addBtn = document.getElementById('info-modal-addcart');
+    if (cart[productName]) {
+      addBtn.textContent = 'Quitar del carrito';
+      addBtn.classList.add('active', 'remove-mode');
+    } else {
+      addBtn.textContent = 'Añadir al carrito';
+      addBtn.classList.remove('active', 'remove-mode');
+    }
+  }
+
+  function closeInfoModal() {
+    document.getElementById('info-modal-overlay').classList.remove('visible');
+  }
+
+  function initInfoButtons() {
+    document.querySelectorAll('.producto .info').forEach(function(info) {
+      var actions = info.querySelector('div:last-child');
+      if (!actions.querySelector('.info-button')) {
+        var titleEl = info.querySelector('h3');
+        var productName = titleEl ? titleEl.textContent.trim() : 'Producto';
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'info-button';
+        btn.style.fontFamily = "'Orbitron', Arial, sans-serif";
+        btn.style.cursor = 'pointer';
+        btn.textContent = 'INFORMACIÓN';
+        btn.onclick = function() {
+          openInfoModal(productName);
+        };
+        actions.appendChild(btn);
+      }
+    });
+  }
+
+  document.getElementById('info-modal-overlay').addEventListener('click', function(event) {
+    if (event.target === this) {
+      closeInfoModal();
+    }
+  });
+
+  window.addEventListener('DOMContentLoaded', function() {
+    initInfoButtons();
   });
 </script>
 </body>
